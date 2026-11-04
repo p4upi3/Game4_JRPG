@@ -7,6 +7,10 @@
 script = ExtResource("1_5vdyj")
 
 [node name="enemy1" parent="." unique_id=1522191395 instance=ExtResource("2_am1p3")]
+defend_chance = 0.25
 
 [node name="enemy2" parent="." unique_id=975986792 instance=ExtResource("2_am1p3")]
 position = Vector2(160, 0)
+max_attack_damage = 2
+defend_chance = 0.4
+critical_chance = 0.15
