@@ -1,0 +1,142 @@
+[gd_scene format=3 uid="uid://dy7cp0qfudr65"]
+
+[ext_resource type="Texture2D" uid="uid://pedod2jeesub" path="res://assets/Player 1/Idle.png" id="1_pqb02"]
+[ext_resource type="Texture2D" uid="uid://bbpf5i7tol8vw" path="res://assets/Player 1/Hurt.png" id="1_ytgb6"]
+[ext_resource type="Texture2D" uid="uid://b2qa6ee58l1fg" path="res://assets/right-arrow.png" id="2_ytgb6"]
+
+[sub_resource type="GDScript" id="GDScript_1bvp3"]
+script/source = "# recommend to make an enemy group scene so
+# we can put enemies into an array and select
+# which enemy to attack, in the same way
+# you can select which player character you
+# want to attack with first... this is done
+# in the video i used:
+# https://www.youtube.com/watch?v=HEexLmt7enc
+# -Kandice
+
+extends Node2D
+
+@onready var character_body_2d: CharacterBody2D = $CharacterBody2D
+@onready var animated_sprite_2d: AnimatedSprite2D = $CharacterBody2D/AnimatedSprite2D
+@onready var arrow: Sprite2D = $CharacterBody2D/Arrow
+@onready var progress_bar: ProgressBar = $CharacterBody2D/ProgressBar
+
+var max_health: float = 7
+
+func _ready() -> void:
+	animated_sprite_2d.play(\"idle\")
+
+var health: float = 7:
+	set(value):
+		health = value
+		_update_progress_bar()
+		animated_sprite_2d.play(\"hurt\")
+
+func _update_progress_bar():
+	progress_bar.value = (health/max_health) * 100
+
+func focus():
+	arrow.show()
+
+func unfocus():
+	arrow.hide()
+
+func take_damage(value):
+	health -= value
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3pafw"]
+atlas = ExtResource("1_ytgb6")
+region = Rect2(0, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3odsw"]
+atlas = ExtResource("1_ytgb6")
+region = Rect2(42, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_woueq"]
+atlas = ExtResource("1_ytgb6")
+region = Rect2(84, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bjfdx"]
+atlas = ExtResource("1_ytgb6")
+region = Rect2(126, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hfcs4"]
+atlas = ExtResource("1_pqb02")
+region = Rect2(0, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c5mkm"]
+atlas = ExtResource("1_pqb02")
+region = Rect2(42, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sl0af"]
+atlas = ExtResource("1_pqb02")
+region = Rect2(84, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s33xd"]
+atlas = ExtResource("1_pqb02")
+region = Rect2(126, 0, 42, 42)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tv6ys"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3pafw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3odsw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_woueq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bjfdx")
+}],
+"loop": 1,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hfcs4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c5mkm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sl0af")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s33xd")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="player1" type="Node2D" unique_id=1465833808]
+script = SubResource("GDScript_1bvp3")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1042242444]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=309778994]
+texture_filter = 1
+position = Vector2(-13.336668, -14.463079)
+scale = Vector2(-4.468782, 4.4927335)
+sprite_frames = SubResource("SpriteFrames_tv6ys")
+animation = &"hurt"
+
+[node name="Arrow" type="Sprite2D" parent="CharacterBody2D" unique_id=177001184]
+visible = false
+position = Vector2(2, -156)
+rotation = 1.5707964
+scale = Vector2(0.16315706, 0.16776247)
+texture = ExtResource("2_ytgb6")
+
+[node name="ProgressBar" type="ProgressBar" parent="CharacterBody2D" unique_id=225838142]
+offset_left = -42.0
+offset_top = -117.0
+offset_right = 59.0
+offset_bottom = -90.0
+value = 100.0
+metadata/_edit_use_anchors_ = true

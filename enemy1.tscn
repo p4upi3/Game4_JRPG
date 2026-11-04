@@ -1,0 +1,153 @@
+[gd_scene format=3 uid="uid://5q4j67b6y5gj"]
+
+[ext_resource type="Texture2D" uid="uid://dxo43ur1ixk2l" path="res://assets/Skeleton_Archer/Idle.png" id="1_g51g3"]
+[ext_resource type="Script" uid="uid://cme5swqhjsyxy" path="res://enemy_1.gd" id="1_pa8dn"]
+[ext_resource type="Texture2D" uid="uid://bynk67coe6awk" path="res://assets/Skeleton_Archer/Hurt.png" id="2_8d1r1"]
+[ext_resource type="Texture2D" uid="uid://du7jl8mtdwi3v" path="res://assets/Skeleton_Archer/Dead.png" id="2_jsi8p"]
+[ext_resource type="Texture2D" uid="uid://b2qa6ee58l1fg" path="res://assets/right-arrow.png" id="2_pa8dn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n3e72"]
+atlas = ExtResource("2_jsi8p")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s5rup"]
+atlas = ExtResource("2_jsi8p")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_knpd4"]
+atlas = ExtResource("2_jsi8p")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_icyhl"]
+atlas = ExtResource("2_jsi8p")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lh8e3"]
+atlas = ExtResource("2_jsi8p")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jsi8p"]
+atlas = ExtResource("2_8d1r1")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ewymi"]
+atlas = ExtResource("2_8d1r1")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5o1f5"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mi564"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tnyew"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u1fve"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ya3f7"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gkv6h"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0mdy6"]
+atlas = ExtResource("1_g51g3")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ha5v8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n3e72")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s5rup")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_knpd4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_icyhl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lh8e3")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jsi8p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ewymi")
+}],
+"loop": 0,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5o1f5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mi564")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tnyew")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u1fve")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ya3f7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gkv6h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0mdy6")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 4.0
+}]
+
+[node name="enemy1" type="Node2D" unique_id=1522191395]
+script = ExtResource("1_pa8dn")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=275466957]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1992326652]
+texture_filter = 1
+position = Vector2(11.000002, -23.999985)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_ha5v8")
+animation = &"die"
+frame_progress = 0.37020454
+
+[node name="Arrow" type="Sprite2D" parent="CharacterBody2D" unique_id=1121898232]
+position = Vector2(-2, -115)
+rotation = 1.5707964
+scale = Vector2(0.14750198, 0.13598852)
+texture = ExtResource("2_pa8dn")
+
+[node name="ProgressBar" type="ProgressBar" parent="CharacterBody2D" unique_id=1460492623]
+offset_left = -52.0
+offset_top = -73.0
+offset_right = 48.571426
+offset_bottom = -46.0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+value = 100.0
+
+[connection signal="animation_finished" from="CharacterBody2D/AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

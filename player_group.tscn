@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://jgnuhdk7xdiy"]
+
+[ext_resource type="Script" uid="uid://bc5mnq240xe5a" path="res://player_group.gd" id="1_xdjqm"]
+[ext_resource type="PackedScene" uid="uid://dy7cp0qfudr65" path="res://player1.tscn" id="1_yt2o6"]
+[ext_resource type="PackedScene" uid="uid://c6qmm8pb38x1u" path="res://player3.tscn" id="2_xdjqm"]
+[ext_resource type="PackedScene" uid="uid://br5pfx2vqigsw" path="res://player2.tscn" id="3_4qi8q"]
+
+[node name="player_group" type="Node2D" unique_id=4466750]
+script = ExtResource("1_xdjqm")
+
+[node name="player1" parent="." unique_id=1465833808 instance=ExtResource("1_yt2o6")]
+
+[node name="player2" parent="." unique_id=592234235 instance=ExtResource("3_4qi8q")]
+position = Vector2(100, 64)
+
+[node name="player3" parent="." unique_id=1985538602 instance=ExtResource("2_xdjqm")]
+position = Vector2(194, -32)
