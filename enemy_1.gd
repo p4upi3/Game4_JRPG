@@ -73,6 +73,8 @@ func take_damage(value: float) -> float:
 
 	if health <= 0.0:
 		animated_sprite_2d.play("die")
+		unfocus()
+		
 	else:
 		animated_sprite_2d.play("hurt")
 

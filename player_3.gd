@@ -37,6 +37,7 @@ func take_damage(value):
 	is_hurt = true
 	if health <= 0.0:
 			animated_sprite_2d.play("die")
+			unfocus()
 	else:
 		animated_sprite_2d.play("hurt")
 
