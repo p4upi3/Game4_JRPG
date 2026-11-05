@@ -1,20 +1,12 @@
 [gd_scene format=3 uid="uid://dy7cp0qfudr65"]
 
+[ext_resource type="Texture2D" uid="uid://b042qf3xc1w6h" path="res://assets/Player 1/Death.png" id="1_3pafw"]
 [ext_resource type="Texture2D" uid="uid://pedod2jeesub" path="res://assets/Player 1/Idle.png" id="1_pqb02"]
 [ext_resource type="Texture2D" uid="uid://bbpf5i7tol8vw" path="res://assets/Player 1/Hurt.png" id="1_ytgb6"]
 [ext_resource type="Texture2D" uid="uid://b2qa6ee58l1fg" path="res://assets/right-arrow.png" id="2_ytgb6"]
 
 [sub_resource type="GDScript" id="GDScript_1bvp3"]
-script/source = "# recommend to make an enemy group scene so
-# we can put enemies into an array and select
-# which enemy to attack, in the same way
-# you can select which player character you
-# want to attack with first... this is done
-# in the video i used:
-# https://www.youtube.com/watch?v=HEexLmt7enc
-# -Kandice
-
-extends Node2D
+script/source = "extends Node2D
 
 @onready var character_body_2d: CharacterBody2D = $CharacterBody2D
 @onready var animated_sprite_2d: AnimatedSprite2D = $CharacterBody2D/AnimatedSprite2D
@@ -23,6 +15,8 @@ extends Node2D
 
 var max_health: float = 7
 
+var is_hurt: bool = false
+
 func _ready() -> void:
 	animated_sprite_2d.play(\"idle\")
 
@@ -30,7 +24,16 @@ var health: float = 7:
 	set(value):
 		health = value
 		_update_progress_bar()
-		animated_sprite_2d.play(\"hurt\")
+
+func get_health():
+	return health
+
+func get_max_health():
+	return max_health
+
+func heal(value):
+	health += value
+	_update_progress_bar()
 
 func _update_progress_bar():
 	progress_bar.value = (health/max_health) * 100
@@ -43,7 +46,54 @@ func unfocus():
 
 func take_damage(value):
 	health -= value
+	is_hurt = true
+	if health <= 0.0:
+			animated_sprite_2d.play(\"die\")
+	else:
+		animated_sprite_2d.play(\"hurt\")
+
+func is_alive() -> bool:
+	return health > 0.0
+
+func _on_animated_sprite_2d_animation_finished() -> void:
+	if animated_sprite_2d.animation == \"hurt\":
+		is_hurt = false
+
+		if is_alive():
+			animated_sprite_2d.play(\"idle\")
 "
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lyl3y"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(0, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ak627"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(42, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6flp4"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(84, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y0uv2"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(126, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0aqdq"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(168, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cmdsw"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(210, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bu4je"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(252, 0, 42, 42)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yjsgn"]
+atlas = ExtResource("1_3pafw")
+region = Rect2(294, 0, 42, 42)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3pafw"]
 atlas = ExtResource("1_ytgb6")
@@ -81,6 +131,35 @@ region = Rect2(126, 0, 42, 42)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_lyl3y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ak627")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6flp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y0uv2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0aqdq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cmdsw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bu4je")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yjsgn")
+}],
+"loop": 0,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_3pafw")
 }, {
 "duration": 1.0,
@@ -92,7 +171,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bjfdx")
 }],
-"loop": true,
+"loop": 0,
 "name": &"hurt",
 "speed": 5.0
 }, {
@@ -109,7 +188,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_s33xd")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 5.0
 }]
@@ -124,7 +203,7 @@ texture_filter = 1
 position = Vector2(-13.336668, -14.463079)
 scale = Vector2(-4.468782, 4.4927335)
 sprite_frames = SubResource("SpriteFrames_tv6ys")
-animation = &"hurt"
+animation = &"die"
 
 [node name="Arrow" type="Sprite2D" parent="CharacterBody2D" unique_id=177001184]
 visible = false
@@ -140,3 +219,5 @@ offset_right = 59.0
 offset_bottom = -90.0
 value = 100.0
 metadata/_edit_use_anchors_ = true
+
+[connection signal="animation_finished" from="CharacterBody2D/AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

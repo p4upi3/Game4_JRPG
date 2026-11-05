@@ -13,6 +13,10 @@ script/source = "extends Node
 @onready var choices = $\"../CanvasLayer/Choices\"
 @onready var slash_button = $\"../CanvasLayer/Choices/Slash\"
 @onready var dodge_button = $\"../CanvasLayer/Choices/Dodge\"
+@onready var cast_button = $\"../CanvasLayer/Choices/Cast Spell\"
+@onready var party_heal = $\"../CanvasLayer/Choices/Party Heal\"
+
+
 @onready var battle_text: Label = $\"../CanvasLayer/BattleText\"
 
 var player_actions = []
@@ -76,8 +80,6 @@ func begin_player_turn():
 
 func show_commands():
 	choices.show()
-	slash_button.show()
-	dodge_button.show()
 	slash_button.grab_focus()
 
 
@@ -111,6 +113,48 @@ func _on_dodge_pressed():
 	log_message(actor.name + \" chose Dodge.\")
 	advance_player()
 
+func _on_heal_pressed() -> void:
+	if battle_over or not battle_running or choosing_target:
+		return
+	
+	var actor = player_group.players[player_index]
+
+	player_actions.append({
+		\"actor\": actor,
+		\"command\": \"heal\"
+	})
+	
+	log_message(actor.name + \" chose Heal.\")
+	advance_player()
+
+func _on_cast_spell_pressed() -> void:
+	if battle_over or not battle_running or choosing_target:
+		return
+
+	if get_alive_members(enemy_group.get_children()).is_empty():
+		check_battle_end()
+		return
+
+	choices.hide()
+	choosing_target = true
+	target_index = 0
+
+	focus_enemy_target()
+	log_message(\"Choose an enemy to attack.\")
+
+func _on_party_heal_pressed() -> void:
+	if battle_over or not battle_running or choosing_target:
+		return
+	
+	var actor = player_group.players[player_index]
+
+	player_actions.append({
+		\"actor\": actor,
+		\"command\": \"party_heal\"
+	})
+	
+	log_message(actor.name + \" chose Party Heal.\")
+	advance_player()
 
 # CHOOSE ENEMY
 
@@ -169,7 +213,7 @@ func skip_defeated_players():
 
 		player_index += 1
 
-# WHO TO FOCUs ON
+# WHO TO FOCUS ON
 
 func focus_current_player():
 	for player in player_group.players:
@@ -224,7 +268,46 @@ func execute_player_actions():
 			target.take_damage(damage)
 
 			log_message(actor.name + \" used Slash on \" + target.name + \" for \" + str(damage) + \" damage.\")
+			
+		elif action[\"command\"] == \"heal\":
+			player_index = 0
+			var player_index_2 = player_index + 1
+			var lowest_health = player_group.players[player_index].get_health()
+			var target_player = player_group.players[player_index]
+			
+			while player_index < player_group.players.size():
+				while player_index_2 < player_group.players.size():
+					if player_group.players[player_index].get_health() > player_group.players[player_index_2].get_health():
+						target_player = player_group.players[player_index_2]
+					player_index_2 += 1
+				player_index += 1
+			
+			target_player.heal(1)
+			
+			log_message(actor.name + \" used Heal.\")
+		
+		elif action[\"command\"] == \"party_heal\":
+			player_index = 0
+			while player_index < player_group.players.size():
+				player_group.players[player_index].heal(randi_range(0,1))
+				player_index += 1
+			
+			log_message(actor.name + \" used Party Heal.\")
+			
+		elif action[\"command\"] == \"cast\":
+			var target = action[\"target\"]
 
+			if not is_instance_valid(target) or target.health <= 0:
+				target = get_first_alive_enemy()
+
+			if target == null:
+				break
+
+			var damage = randi_range(0, 3)
+			target.take_damage(damage)
+
+			log_message(actor.name + \" used Cast Spell on \" + target.name + \" for \" + str(damage) + \" damage.\")
+			
 			await get_tree().create_timer(0.7).timeout
 
 	if check_battle_end():
@@ -334,10 +417,10 @@ position = Vector2(197, 376)
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1218969996]
 z_index = -1
-offset_left = -32.0
-offset_top = -29.0
-offset_right = 1100.0
-offset_bottom = 618.0
+offset_left = -28.0
+offset_top = -15.0
+offset_right = 1104.0
+offset_bottom = 632.0
 texture = ExtResource("2_0xm2m")
 
 [node name="TextureRect2" type="TextureRect" parent="." unique_id=1812751792]
@@ -351,18 +434,32 @@ texture = ExtResource("4_lquwl")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2123524996]
 
 [node name="Choices" type="BoxContainer" parent="CanvasLayer" unique_id=99982252]
-offset_left = 33.0
-offset_top = 758.0
-offset_right = 1045.0
-offset_bottom = 915.0
+offset_left = 32.0
+offset_top = 756.0
+offset_right = 1044.0
+offset_bottom = 913.0
+size_flags_stretch_ratio = 0.0
+alignment = 1
 
 [node name="Slash" type="Button" parent="CanvasLayer/Choices" unique_id=1405348632]
 layout_mode = 2
 text = "Slash"
 
+[node name="Cast Spell" type="Button" parent="CanvasLayer/Choices" unique_id=583704868]
+layout_mode = 2
+text = "Cast Spell"
+
 [node name="Dodge" type="Button" parent="CanvasLayer/Choices" unique_id=1697434842]
 layout_mode = 2
 text = "Dodge"
+
+[node name="Heal" type="Button" parent="CanvasLayer/Choices" unique_id=109535741]
+layout_mode = 2
+text = "Heal"
+
+[node name="Party Heal" type="Button" parent="CanvasLayer/Choices" unique_id=1793933700]
+layout_mode = 2
+text = "Party Heal"
 
 [node name="BattleText" type="Label" parent="CanvasLayer" unique_id=1602499404]
 offset_left = 35.0
@@ -374,4 +471,7 @@ offset_bottom = 748.0
 script = SubResource("GDScript_1bvp3")
 
 [connection signal="pressed" from="CanvasLayer/Choices/Slash" to="BattleHandler" method="_on_slash_pressed"]
+[connection signal="pressed" from="CanvasLayer/Choices/Cast Spell" to="BattleHandler" method="_on_cast_spell_pressed"]
 [connection signal="pressed" from="CanvasLayer/Choices/Dodge" to="BattleHandler" method="_on_dodge_pressed"]
+[connection signal="pressed" from="CanvasLayer/Choices/Heal" to="BattleHandler" method="_on_heal_pressed"]
+[connection signal="pressed" from="CanvasLayer/Choices/Party Heal" to="BattleHandler" method="_on_party_heal_pressed"]
