@@ -165,6 +165,19 @@ func attack(target: Node) -> Dictionary:
 			"message": enemy_name + " had no valid target."
 		}
 
+	# check if dodging
+	if target.has_meta("dodging") and target.get_meta("dodging"):
+		target.set_meta("dodging", false)
+
+		return {
+			"command": "attack",
+			"success": true,
+			"target": target,
+			"damage": 0,
+			"critical": false,
+			"message": target.name + " dodged " + enemy_name + "'s attack!"
+		}
+		
 	var damage_roll: Dictionary = roll_attack_damage()
 
 	var damage: int = int(damage_roll["damage"])

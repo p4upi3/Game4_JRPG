@@ -60,7 +60,9 @@ func _process(_delta):
 func begin_player_turn():
 	if check_battle_end():
 		return
-
+	
+	reset_all_dodges()
+		
 	battle_running = true
 	choosing_target = false
 	player_actions.clear()
@@ -264,10 +266,17 @@ func execute_player_actions():
 			if target == null:
 				break
 
-			var damage = randi_range(1, 2)
-			target.take_damage(damage)
+			var hit_rate: float = 0.8
+			var random_number: float = randf()
 
-			log_message(actor.name + \" used Slash on \" + target.name + \" for \" + str(damage) + \" damage.\")
+			if random_number < hit_rate:
+				var damage = randi_range(1, 2)
+				target.take_damage(damage)
+
+				log_message(str(actor.name) + \" hit \" + str(target.name) + \" for \" + str(damage) + \" damage!\")
+			else:
+				log_message(str(actor.name) + \" missed \" + str(target.name) + \"!\")
+
 			
 		elif action[\"command\"] == \"heal\":
 			player_index = 0
@@ -398,6 +407,11 @@ func get_first_alive_enemy():
 		return null
 
 	return enemies[0]
+
+func reset_all_dodges():
+	for player in player_group.get_children():
+		if is_instance_valid(player):
+			player.set_meta(\"dodging\", false)
 
 
 func log_message(message):
